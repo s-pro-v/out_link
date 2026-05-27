@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            var t = localStorage.getItem('cyber-refactor-theme') || 'dark';
+            var root = document.documentElement;
+            root.setAttribute('data-theme', t);
+            root.setAttribute('theme', t);
+        })();
+    </script>
+    <title>OXY_OS | SIPHON_EXTRACTOR</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='22' fill='%23231314' stroke='%23f36c00' stroke-width='4'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='22' font-family='JetBrains Mono,monospace' fill='%23f36c00'%3EOS%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/s-pro-v/Industrial-HUD@main/css/style.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/s-pro-v/notes-repo@main/panel.css">
+    <link rel="stylesheet" href="index.css">
+
+</head>
+
+<body>
+
+    <div id="os-container">
+        <header>
+            <div class="logo-area">
+                <div class="title">OXY_OS | TRACEBACK</div>
+                <div class="version">KERNEL_V.3.11_STABLE</div>
+            </div>
+            <div class="sys-metrics">
+                <div class="sys-metric">
+                    <span class="metric-label"
+                        style="color: var(--text-muted); font-size: 10px; font-weight: 700;">STATUS:</span>
+                    <span class="status-text" style="color: var(--success-color); font-weight: 700; font-size: 10px;">
+                        <i class="fas fa-shield-alt"></i> <span class="status-text-status">ENCRYPTED</span>
+                    </span>
+                </div>
+                <div class="sys-metric">
+                    <span class="metric-label"
+                        style="color: var(--text-muted); font-size: 10px; font-weight: 700;">BUFFER:</span>
+                    <span id="buffer-stat" class="buffer-stat"
+                        style="color: var(--info-color); font-weight: 700; font-size: 10px;">
+                        <i class="fas fa-microchip"></i> <span class="buffer-stat-value">0.00</span> KB
+                    </span>
+                </div>
+                <div class="sys-metric">
+                    <span class="metric-label"
+                        style="color: var(--text-muted); font-size: 10px; font-weight: 700;">TRACE_ID:</span>
+                    <span class="trace-id" style="color: var(--text-muted); font-weight: 700; font-size: 10px;">
+                        <i class="fas fa-hashtag"></i> <span class="trace-id-value">9928347721-00X</span>
+                    </span>
+                </div>
+            </div>
+            <button type="button" class="header-settings-btn" id="btn-open-settings" title="Ustawienia edytora Monaco">
+                <i class="fas fa-sliders-h" aria-hidden="true"></i> EDITOR_CFG
+            </button>
+            <button type="button" class="header-settings-btn" id="btn-toggle-theme" title="Przełącz motyw">
+                <i class="fas fa-moon"></i> THEME
+            </button>
+
+        </header>
+
+        <div class="editor-frame">
+            <div class="bracket tl"></div>
+            <div class="bracket tr"></div>
+            <div class="bracket bl"></div>
+            <div class="bracket br"></div>
+            <div class="label">INPUT_SOURCE</div>
+            <div id="editorContainer"></div>
+            <div class="tech-print" style="bottom: 5px; right: 10px;">LATENCY: 0.12ms - MEM_LOCK: <span
+                    class="mem-lock-status"><i class="fas fa-lock"></i> TRUE</span></div>
+        </div>
+
+        <div class="results-frame">
+            <div class="results-header">
+                <span style="font-size: 11px; letter-spacing: 2px;">EXTRACTION_RESULTS</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button class="action-btn-small" id="btn-copy-all" title="Kopiuj wszystkie wyniki"><i
+                            class="fas fa-copy"></i> COPY</button>
+                    <button class="action-btn-small" id="btn-open-tab" title="Otwórz strumień w nowej karcie"><i
+                            class="fas fa-external-link-alt"></i> OPEN</button>
+                    <div class="count-badge" id="matchCount">0</div>
+                </div>
+            </div>
+            <div id="resultsGrid"></div>
+            <div class="tech-print" style="bottom: 5px; left: 10px;">0x000F21 - AUTO_SCAN: <span
+                    class="auto-scan-status">ON</span></div>
+        </div>
+
+        <div class="control-bar">
+            <div class="filter-section">
+                <span style="font-size: 10px; color: var(--text-muted); margin-right: 15px;">FILTER_MODE:</span>
+                <button class="filter-btn active" data-type="all">ALL</button>
+                <button class="filter-btn" data-type="links">LINKS</button>
+                <button class="filter-btn" data-type="emails">MAILS</button>
+                <button class="filter-btn" data-type="numbers">NUMBERS</button>
+            </div>
+            <button class="action-btn" id="btn-wipe"><i class="fas fa-eraser"></i> CLEAR</button>
+            <button class="action-btn" id="btn-extract"><i class="fas fa-play"></i> EXTRACT</button>
+        </div>
+    </div>
+
+    <div class="settings-sidebar-overlay" id="settingsOverlay" aria-hidden="true"></div>
+    <aside class="settings-sidebar" id="settingsSidebar" aria-hidden="true" aria-labelledby="settings-sidebar-title">
+        <div class="settings-sidebar-header">
+            <span class="settings-sidebar-title" id="settings-sidebar-title">Ustawienia edytora</span>
+            <button type="button" class="close-settings" id="btn-close-settings" title="Zamknij" aria-label="Zamknij">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="settings-sidebar-body" id="settingsSidebarBody"></div>
+    </aside>
+
+    <script src="https://cdn.jsdelivr.net/gh/s-pro-v/dev_rep@main/menu.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/s-pro-v/dev_rep@main/monaco-css.js"></script>
+    <script src="index.js"></script>
+
+</body>
+
+</html>
