@@ -38,34 +38,34 @@
             </div>
             <div class="sys-metrics">
                 <div class="sys-metric">
-                    <span class="metric-label"
-                        style="color: var(--text-muted); font-size: 10px; font-weight: 700;">STATUS:</span>
-                    <span class="status-text" style="color: var(--success-color); font-weight: 700; font-size: 10px;">
+                    <span class="metric-label">STATUS:</span>
+                    <span class="status-text">
                         <i class="fas fa-shield-alt"></i> <span class="status-text-status">ENCRYPTED</span>
                     </span>
                 </div>
                 <div class="sys-metric">
-                    <span class="metric-label"
-                        style="color: var(--text-muted); font-size: 10px; font-weight: 700;">BUFFER:</span>
-                    <span id="buffer-stat" class="buffer-stat"
-                        style="color: var(--info-color); font-weight: 700; font-size: 10px;">
+                    <span class="metric-label">BUFFER:</span>
+                    <span id="buffer-stat" class="buffer-stat">
                         <i class="fas fa-microchip"></i> <span class="buffer-stat-value">0.00</span> KB
                     </span>
                 </div>
                 <div class="sys-metric">
-                    <span class="metric-label"
-                        style="color: var(--text-muted); font-size: 10px; font-weight: 700;">TRACE_ID:</span>
-                    <span class="trace-id" style="color: var(--text-muted); font-weight: 700; font-size: 10px;">
+                    <span class="metric-label">TRACE_ID:</span>
+                    <span class="trace-id">
                         <i class="fas fa-hashtag"></i> <span class="trace-id-value">9928347721-00X</span>
                     </span>
                 </div>
             </div>
-            <button type="button" class="header-settings-btn" id="btn-open-settings" title="Ustawienia edytora Monaco">
-                <i class="fas fa-sliders-h" aria-hidden="true"></i> EDITOR_CFG
-            </button>
-            <button type="button" class="header-settings-btn" id="btn-toggle-theme" title="Przełącz motyw">
-                <i class="fas fa-moon"></i> THEME
-            </button>
+            <div class="btn-bg">
+                <button type="button" class="header-settings-btn" id="btn-open-settings" title="Ustawienia edytora Monaco">
+                    <i class="fas fa-sliders-h" aria-hidden="true"></i> EDITOR_CFG
+                </button>
+            </div>
+            <div class="btn-bg">
+                <button type="button" class="header-settings-btn" id="btn-toggle-theme" title="Przełącz motyw">
+                    <i class="fas fa-moon"></i> THEME
+                </button>
+            </div>
 
         </header>
 
@@ -76,36 +76,52 @@
             <div class="bracket br"></div>
             <div class="label">INPUT_SOURCE</div>
             <div id="editorContainer"></div>
-            <div class="tech-print" style="bottom: 5px; right: 10px;">LATENCY: 0.12ms - MEM_LOCK: <span
+            <div class="tech-print bottom-right">LATENCY: 0.12ms - MEM_LOCK: <span
                     class="mem-lock-status"><i class="fas fa-lock"></i> TRUE</span></div>
         </div>
 
         <div class="results-frame">
             <div class="results-header">
-                <span style="font-size: 11px; letter-spacing: 2px;">EXTRACTION_RESULTS</span>
-                <div style="display: flex; gap: 8px; align-items: center;">
-                    <button class="action-btn-small" id="btn-copy-all" title="Kopiuj wszystkie wyniki"><i
-                            class="fas fa-copy"></i> COPY</button>
-                    <button class="action-btn-small" id="btn-open-tab" title="Otwórz strumień w nowej karcie"><i
-                            class="fas fa-external-link-alt"></i> OPEN</button>
+                <span class="results-header-title">EXTRACTION_RESULTS</span>
+                <div class="results-header-actions">
+                    <div class="btn-bg">
+                        <button class="action-btn-small" id="btn-copy-all" title="Kopiuj wszystkie wyniki"><i
+                                class="fas fa-copy"></i> COPY</button>
+                    </div>
+                    <div class="btn-bg">
+                        <button class="action-btn-small" id="btn-open-tab" title="Otwórz strumień w nowej karcie"><i
+                                class="fas fa-external-link-alt"></i> OPEN</button>
+                    </div>
                     <div class="count-badge" id="matchCount">0</div>
                 </div>
             </div>
             <div id="resultsGrid"></div>
-            <div class="tech-print" style="bottom: 5px; left: 10px;">0x000F21 - AUTO_SCAN: <span
+            <div class="tech-print bottom-left">0x000F21 - AUTO_SCAN: <span
                     class="auto-scan-status">ON</span></div>
         </div>
 
         <div class="control-bar">
             <div class="filter-section">
-                <span style="font-size: 10px; color: var(--text-muted); margin-right: 15px;">FILTER_MODE:</span>
-                <button class="filter-btn active" data-type="all">ALL</button>
-                <button class="filter-btn" data-type="links">LINKS</button>
-                <button class="filter-btn" data-type="emails">MAILS</button>
-                <button class="filter-btn" data-type="numbers">NUMBERS</button>
+                <span class="filter-label">FILTER_MODE:</span>
+                <div class="btn-bg">
+                    <button class="filter-btn active" data-type="all"><i class="fas fa-layer-group"></i> ALL</button>
+                </div>
+                <div class="btn-bg">
+                    <button class="filter-btn" data-type="links"><i class="fas fa-link"></i> LINKS</button>
+                </div>
+                <div class="btn-bg">
+                    <button class="filter-btn" data-type="emails"><i class="fas fa-envelope"></i> MAILS</button>
+                </div>
+                <div class="btn-bg">
+                    <button class="filter-btn" data-type="numbers"><i class="fas fa-hashtag"></i> NUMBERS</button>
+                </div>
             </div>
-            <button class="action-btn" id="btn-wipe"><i class="fas fa-eraser"></i> CLEAR</button>
-            <button class="action-btn" id="btn-extract"><i class="fas fa-play"></i> EXTRACT</button>
+            <div class="btn-bg">
+                <button class="action-btn" id="btn-wipe"><i class="fas fa-eraser"></i> CLEAR</button>
+            </div>
+            <div class="btn-bg">
+                <button class="action-btn" id="btn-extract"><i class="fas fa-play"></i> EXTRACT</button>
+            </div>
         </div>
     </div>
 
@@ -113,9 +129,11 @@
     <aside class="settings-sidebar" id="settingsSidebar" aria-hidden="true" aria-labelledby="settings-sidebar-title">
         <div class="settings-sidebar-header">
             <span class="settings-sidebar-title" id="settings-sidebar-title">Ustawienia edytora</span>
-            <button type="button" class="close-settings" id="btn-close-settings" title="Zamknij" aria-label="Zamknij">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
+            <div class="btn-bg">
+                <button type="button" class="close-settings" id="btn-close-settings" title="Zamknij" aria-label="Zamknij">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
         <div class="settings-sidebar-body" id="settingsSidebarBody"></div>
     </aside>

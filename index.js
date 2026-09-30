@@ -13,6 +13,8 @@ function getStoredTheme() {
 }
 
 function applyAppTheme(theme) {
+    document.documentElement.classList.add('theme-switching');
+
     const isDark = theme === 'dark';
     const root = document.documentElement;
     root.setAttribute('data-theme', theme);
@@ -31,6 +33,12 @@ function applyAppTheme(theme) {
     if (btn) {
         btn.title = isDark ? 'Przełącz na jasny motyw' : 'Przełącz na ciemny motyw';
     }
+
+    void window.getComputedStyle(document.documentElement).cssText;
+
+    setTimeout(() => {
+        document.documentElement.classList.remove('theme-switching');
+    }, 50);
 }
 
 function setupThemeToggle() {
@@ -44,114 +52,358 @@ function setupThemeToggle() {
 setupThemeToggle();
 
 function buildExportStreamDocumentHtml(content, count, filterMode) {
+    const currentTheme = getStoredTheme();
     return `<!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" data-theme="${currentTheme}" theme="${currentTheme}">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='4' y='4' width='40' height='40' rx='8' fill='%23181818' stroke='%23f36c00' stroke-width='3.5'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-size='16' font-weight='800' font-family='JetBrains Mono,monospace' fill='%23f36c00'%3EEXP%3C/text%3E%3C/svg%3E">
     <title>OXY_OS // EXPORT_STREAM</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        body {
-            background-color: #121212;
-            background-image:
-               repeating-linear-gradient(45deg,
-            transparent,
-            transparent 10px,
-            rgba(243, 108, 0, 0.05) 10px,
-            rgba(243, 108, 0, 0.05) 11px);
-            background-size: 100% 100%, 20px 20px, 20px 20px;
-            background-attachment: fixed;
-            color: #ffffff;
-            font-family: "JetBrains Mono", monaco, courier, monospace;
-            padding: 25px;
-            margin: 0;
-            font-weight: 800;
-            white-space: pre-wrap;
-            font-size: 16px;
-            line-height: 1.2;
+        /* Tymczasowe blokowanie animacji przy zmianie motywu */
+        :root.theme-switching,
+        :root.theme-switching *,
+        :root.theme-switching *::before,
+        :root.theme-switching *::after {
+            transition: 0s !important;
+            transition-duration: 0s !important;
+            transition-delay: 0s !important;
+        }
+
+        /* --- THEME SYSTEM (PURE CSS VARIABLES) --- */
+        :root,
+        :root[data-theme="light"],
+        :root[theme="light"] {
+            --padding: 0.125rem;
+            --gap: 0.125rem;
+            --bg-color: #f8f9fa;
+            --highlight-color: #f36c00;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --border-color: #dee2e6;
+            --border-color-hover: #e0e0e0;
+            --panel-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --input-bg: #f5f5f5;
+            --bg: #f8f9fa;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #ffffff;
+            --text-color: #212529;
+            --text-primary: #212529;
+            --text-muted: #6c757d;
+            --hover-bg: #eee;
+            --stripe-accent: rgba(0, 0, 0, 0.06);
+            --bg-stripe-pattern: linear-gradient(135deg,
+            transparent 0%,
+            transparent 25%,
+            var(--stripe-accent) 25%,
+            var(--stripe-accent) 50%,
+            transparent 50%,
+            transparent 75%,
+            var(--stripe-accent) 75%,
+            var(--stripe-accent) 100%);
+            --shadow-drop: rgba(0, 0, 0, 0.3) 0px 1px 2px 0px, rgba(78, 78, 78, 0.185) 0px 2px 6px 2px;
+            --shadow-inset: inset rgba(78, 78, 78, 0.185) 0px 2px 6px 2px, inset rgba(0, 0, 0, 0.3) 0px 1px 2px 0px;
+            --shadow-hover: rgba(32, 32, 32, 0.2) 0px 0px 0px 1px, rgba(0, 0, 0, 0.325) 0px 2px 3px -0.5px, rgba(255, 255, 255, 0.04) 0px 0.5px 0px inset;
+            --val-accent: #b45309;
+        }
+
+        :root[data-theme="dark"],
+        :root[theme="dark"] {
+            --padding: 0.125rem;
+            --gap: 0.125rem;
+            --bg-color: #1a1a1a;
+            --bg: #121212;
+            --bg-primary: #1e1e1e;
+            --bg-secondary: #252526;
+            --bg-tertiary: #2e2e2e;
+            --border-color: #2a2a2a;
+            --border-color-hover: #444;
+            --panel-bg: #2a2a2a;
+            --card-bg: #303030;
+            --input-bg: #2d2d30;
+            --text-color: #e0e0e0;
+            --text-primary: #e0e0e0;
+            --text-muted: #858585;
+            --hover-bg: #3c3c3c;
+            --highlight-color: #f36c00;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --stripe-accent: rgba(255, 255, 255, 0.04);
+            --bg-stripe-pattern: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-tertiary) 25%, var(--stripe-accent) 25%, var(--stripe-accent) 50%, var(--bg-tertiary) 50%, var(--bg-tertiary) 75%, var(--stripe-accent) 75%, var(--stripe-accent) 100%);
+            --shadow-drop: rgba(32, 32, 32, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+            --shadow-inset: inset 0px 0px 0px 2px rgba(32, 32, 32, 0.4), inset 0px 4px 6px -1px rgba(0, 0, 0, 0.65), inset 0px 1px 0px rgba(255, 255, 255, 0.08);
+            --shadow-hover: rgba(32, 32, 32, 0.2) 0px 0px 0px 1px, rgba(0, 0, 0, 0.325) 0px 2px 3px -0.5px, rgba(255, 255, 255, 0.04) 0px 0.5px 0px inset;
+            --val-accent: #eeff00;
+        }
+
+        * {
+            box-sizing: border-box;
+            border-radius: 0 !important;
+            cursor: crosshair;
             user-select: none;
             scrollbar-width: none;
         }
 
-        .header {
-            color: #f36c00;
-            border-bottom: 1px solid #333;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            font-size: 14px;
-            text-transform: uppercase;
-            background: #121212;
+        .btn-bg {
+            display: inline-flex;
+            justify-content: center;
+            align-items: stretch;
+            margin: 0;
+            box-shadow: var(--shadow-inset);
+            padding: var(--padding);
+            gap: var(--gap);
+            position: relative;
+            overflow: hidden;
+            width: fit-content;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            user-select: none;
+            box-sizing: border-box;
+            flex-direction: column;
+            transition: all 0.2s;
         }
 
-        .hl-dim { color: #ccc; margin: 0 6px; }
-        .label-text { color: #ccc; }
-        .data-val { color: #eeff00; text-shadow: 0 0 4px rgba(255,255,255,0.3); }
-        .state-val { color: #f36c00; text-shadow: 0 0 4px rgba(243,108,0,0.3); }
+        .btn-bg:hover {
+            border-color: var(--border-color-hover);
+        }
+
+        body {
+            background-color: var(--bg-tertiary);
+            background-image: var(--bg-stripe-pattern);
+            background-size: 20px 20px;
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-family: "JetBrains Mono", monaco, courier, monospace;
+            padding: 10px;
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.45;
+            user-select: text;
+            scrollbar-width: thin;
+            scrollbar-color: var(--highlight-color) var(--bg-secondary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-drop);
+            padding: 2px 15px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            font-size: 12px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: relative;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hl-dim { color: var(--text-muted); margin: 0 4px; user-select: none; }
+        .label-text { color: var(--text-muted); }
+        .data-val { color: var(--val-accent); text-shadow: 0 0 6px rgba(238, 255, 0, 0.35); font-weight: 800; }
+        .state-val { color: var(--highlight-color); text-shadow: 0 0 6px rgba(243, 108, 0, 0.35); font-weight: 800; }
+
+        .action-btn-small {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-drop);
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .action-btn-small:hover {
+            background: var(--hover-bg);
+            color: var(--text-color);
+        }
+
+        .action-btn-small:active {
+            box-shadow: var(--shadow-inset);
+        }
 
         .output-wrapper {
             position: relative;
-            padding: 10px;
-            background: #212121;
-            border: 1px solid #333;
-            border-radius: 0;
+            padding: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            margin-top: 12px;
+            box-shadow: var(--shadow-drop);
         }
 
         .corner {
             position: absolute;
             width: 10px;
             height: 10px;
-            border: 2px solid #f36c00;
+            border: 2px solid var(--highlight-color);
+            pointer-events: none;
+            z-index: 10;
         }
         .c-tl { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
         .c-tr { top: -2px; right: -2px; border-left: 0; border-bottom: 0; }
         .c-bl { bottom: -2px; left: -2px; border-right: 0; border-top: 0; }
         .c-br { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
 
+        .output-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(502px, 1fr));
+            gap: 0.125rem;
+            min-height: 100px;
+        }
+
+        .dump-row-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .dump-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            transition: all 0.15s ease;
+            font-size: 12px;
+            box-shadow: var(--shadow-drop);
+            word-break: break-all;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        .dump-row:hover {
+            background: var(--hover-bg);
+        }
+
         .tag {
-            color: #f36c00;
+            color: var(--highlight-color);
             font-weight: 700;
             user-select: none;
+            flex-shrink: 0;
+            font-size: 11px;
         }
+
         .stream-link {
-            color: #ffffff;
+            color: var(--text-primary);
             text-decoration: none;
-            border-bottom: 1px dashed #555555;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             user-select: text;
         }
+
         .stream-link:visited,
         .stream-link.clicked {
-            color: #ccc !important;
-            border-bottom-color: #333333 !important;
+            color: var(--text-muted) !important;
             opacity: 0.6 !important;
         }
+
         .stream-link:hover,
         .stream-link:focus {
-            color: #f36c00 !important;
-            border-bottom-color: #f36c00 !important;
-            background: rgba(243, 108, 0, 0.1);
+            color: var(--highlight-color) !important;
+            background: var(--hover-bg);
             outline: none;
             opacity: 1 !important;
         }
+
         .raw-val {
-            color: #ffffff;
+            color: inherit;
             user-select: text;
-        }
-        ::selection {
-            background: #f36c00;
-            color: #000;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .output-container {
-            position: relative;
-            top: -50px;
+        .footer-note {
+            margin-top: 14px;
+            font-size: 10px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px dashed var(--highlight-color);
+            padding-top: 8px;
+            user-select: none;
+        }
+
+        ::selection {
+            background: var(--highlight-color);
+            color: #000;
         }
     </style>
 </head>
 <body>
-    <div class="header"><span class="state-val">OXY_OS</span> <span class="hl-dim">|</span> EXTRACTED_STREAM_DUMP <span class="hl-dim">|</span> <span class="label-text">COUNT:</span> <span class="data-val">${count}</span> <span class="hl-dim">|</span> <span class="label-text">STREAM_MODE:</span> <span class="state-val">${filterMode.toUpperCase()}</span></div>
+    <div class="header">
+        <div class="corner c-tl"></div>
+        <div class="corner c-tr"></div>
+        <div class="corner c-bl"></div>
+        <div class="corner c-br"></div>
+
+        <div class="header-meta">
+            <span class="state-val">OXY_OS</span>
+            <span class="hl-dim">|</span> EXTRACTED_STREAM_DUMP
+            <span class="hl-dim">|</span> <span class="label-text">COUNT:</span> <span class="data-val">${count}</span>
+            <span class="hl-dim">|</span> <span class="label-text">STREAM_MODE:</span> <span class="state-val">${filterMode.toUpperCase()}</span>
+        </div>
+
+        <div class="header-actions">
+            <div class="btn-bg">
+                <button id="dump-copy-btn" class="action-btn-small" title="Kopiuj zawartość do schowka">
+                    <i class="fas fa-copy"></i> COPY ALL
+                </button>
+            </div>
+            <div class="btn-bg">
+                <button id="dump-dl-btn" class="action-btn-small" title="Pobierz plik tekstowy">
+                    <i class="fas fa-download"></i> DOWNLOAD
+                </button>
+            </div>
+            <div class="btn-bg">
+                <button id="dump-theme-btn" class="action-btn-small" title="Przełącz motyw">
+                    <i class="fas fa-adjust"></i> THEME
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div class="output-wrapper">
         <div class="corner c-tl"></div>
@@ -159,13 +411,53 @@ function buildExportStreamDocumentHtml(content, count, filterMode) {
         <div class="corner c-bl"></div>
         <div class="corner c-br"></div>
         <div class="output-container">${content}</div>
+        <div class="footer-note">
+            <span>TERMINAL DESERIALIZER | UTF-8 STREAM</span>
+            <span>END OF DUMP</span>
+        </div>
     </div>
 
     <script>
         document.body.addEventListener('click', function(e) {
-            if (e.target && e.target.classList.contains('stream-link')) {
-                e.target.classList.add('clicked');
+            const link = e.target.closest('.stream-link');
+            if (link) {
+                link.classList.add('clicked');
             }
+        });
+
+        document.getElementById('dump-copy-btn')?.addEventListener('click', function() {
+            const rows = Array.from(document.querySelectorAll('.output-container .dump-row'));
+            const text = rows.map(r => r.innerText.replace(/^\\[[A-Z]+\\]\\s*/, '')).join('\\n');
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('dump-copy-btn');
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> COPIED!';
+                setTimeout(() => btn.innerHTML = orig, 1000);
+            });
+        });
+
+        document.getElementById('dump-dl-btn')?.addEventListener('click', function() {
+            const htmlContent = '<!DOCTYPE html>\\n' + document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'OXY_OS_STREAM_DUMP.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('dump-theme-btn')?.addEventListener('click', function() {
+            const root = document.documentElement;
+            root.classList.add('theme-switching');
+            const isDark = root.getAttribute('data-theme') === 'dark';
+            const next = isDark ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            root.setAttribute('theme', next);
+            void window.getComputedStyle(root).cssText;
+            setTimeout(() => {
+                root.classList.remove('theme-switching');
+            }, 50);
         });
     <\/script>
 </body>
@@ -321,17 +613,26 @@ require(['vs/editor/editor.main'], function () {
         });
     });
 
+    function getItemIconHtml(type) {
+        if (type === 'LIN') return '<i class="fas fa-link"></i>';
+        if (type === 'EMA') return '<i class="fas fa-envelope"></i>';
+        if (type === 'NUM') return '<i class="fas fa-hashtag"></i>';
+        return '<i class="fas fa-code"></i>';
+    }
+
     btnOpenTab.addEventListener('click', () => {
         if (currentExtracts.length === 0) return;
 
         const content = currentExtracts.map((item) => {
+            const iconHtml = getItemIconHtml(item.type);
             if (item.type === 'LIN') {
-                return `<span class="tag">[LIN]</span> <a href="${item.val}" target="_blank" class="stream-link">${item.val}</a>`;
+                const url = item.val.startsWith('http://') || item.val.startsWith('https://') ? item.val : `https://${item.val}`;
+                return `<div class="btn-bg dump-row-wrapper"><a href="${url}" target="_blank" rel="noopener noreferrer" class="dump-row stream-link"><span class="tag">${iconHtml}</span> <span class="raw-val">${item.val}</span></a></div>`;
             }
             if (item.type === 'EMA') {
-                return `<span class="tag">[EMA]</span> <a href="mailto:${item.val}" class="stream-link">${item.val}</a>`;
+                return `<div class="btn-bg dump-row-wrapper"><a href="mailto:${item.val}" class="dump-row stream-link"><span class="tag">${iconHtml}</span> <span class="raw-val">${item.val}</span></a></div>`;
             }
-            return `<span class="tag">[${item.type}]</span> <span class="raw-val">${item.val}</span>`;
+            return `<div class="btn-bg dump-row-wrapper"><div class="dump-row"><span class="tag">${iconHtml}</span> <span class="raw-val">${item.val}</span></div></div>`;
         }).join('\n');
 
         openExportStreamTab(
@@ -363,11 +664,18 @@ require(['vs/editor/editor.main'], function () {
         updateBuffer();
 
         currentExtracts.forEach((item) => {
+            const iconHtml = getItemIconHtml(item.type);
             const div = document.createElement('div');
             div.className = 'extracted-item';
-            div.innerHTML = `<span class="type-tag">[${item.type}]</span>${item.val}`;
+            div.innerHTML = `<span class="type-tag">${iconHtml}</span>${item.val}`;
             div.onclick = () => {
                 navigator.clipboard.writeText(item.val);
+                if (item.type === 'LIN') {
+                    const url = item.val.startsWith('http://') || item.val.startsWith('https://') ? item.val : `https://${item.val}`;
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                } else if (item.type === 'EMA') {
+                    window.open(`mailto:${item.val}`, '_blank');
+                }
                 div.style.backgroundColor = 'rgba(243, 108, 0, 0.4)';
                 div.style.borderColor = '#f36c00';
                 setTimeout(() => {

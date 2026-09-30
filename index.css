@@ -1,3 +1,13 @@
+/* Tymczasowe blokowanie animacji przy zmianie motywu */
+:root.theme-switching,
+:root.theme-switching *,
+:root.theme-switching *::before,
+:root.theme-switching *::after {
+    transition: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+}
+
 /* Jasny motyw — musi wygrać z panel.css (monaco :root domyślnie = dark) */
 :root,
 :root[data-theme="light"],
@@ -39,6 +49,8 @@
     --visit-outbound-text: #b5830e;
 
     /* --- SETTINGS --- */
+    --padding: 0.125rem;
+    --gap: 0.125rem;
     --font-family: "JetBrains Mono", monaco, courier, monospace;
     --font-main: var(--font-family);
     --transition-speed: 0.2s;
@@ -182,6 +194,7 @@
     box-sizing: border-box;
     border-radius: 0 !important;
     cursor: crosshair;
+    scrollbar-width: none;
 }
 
 html {
@@ -306,8 +319,35 @@ header {
         font-size: 10px;
         color: var(--text-muted);
 
-        span {
-            color: var(--text-color);
+        .sys-metric {
+            display: flex;
+            align-items: center;
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .status-text {
+            color: var(--success-color);
+            font-weight: 700;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+
+        .buffer-stat {
+            color: var(--info-color);
+            font-weight: 700;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+
+        .trace-id {
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 10px;
             margin-left: 5px;
         }
     }
@@ -415,7 +455,10 @@ header {
         overflow-x: hidden;
         scrollbar-width: thin;
         scrollbar-color: var(--border-color) transparent;
-        padding: 10px;
+        padding: 0.125rem;
+        display: inline-flex;
+        gap: 0.125rem;
+        flex-wrap: wrap;
 
         &::-webkit-scrollbar {
             width: 6px;
@@ -433,7 +476,7 @@ header {
             font-size: 11px;
             padding: 8px;
             border: 1px solid transparent;
-            margin-bottom: 5px;
+            width: 100%;
             background: var(--bg-tertiary);
             white-space: nowrap;
             overflow: hidden;
@@ -486,6 +529,9 @@ header {
             letter-spacing: 1px;
             transition: all 0.3s;
             box-shadow: var(--shadow-drop);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
 
             &.active {
                 border-bottom-color: var(--highlight-color);
@@ -510,25 +556,41 @@ header {
         letter-spacing: 2px;
         transition: background 0.3s, color 0.3s, border-color 0.3s;
         box-shadow: var(--shadow-drop);
-        height: 50px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
 
         &#btn-extract {
-            background: var(--highlight-color);
-            color: var(--bg-color);
+            background: var(--bg-color);
+            color: var(--text-muted);
 
             &:hover {
                 background: var(--hover-bg);
+                color: var(--text-color);
+            }
+
+            &:active {
+                border-color: var(--border-color-hover);
+                background: var(--bg-tertiary);
+                color: var(--text-muted);
+                box-shadow: var(--shadow-inset);
             }
         }
 
         &#btn-wipe {
             &:hover {
-                background: var(--bg-color);
+                background: var(--hover-bg);
                 color: var(--highlight-color);
             }
+
+            &:active {
+                border-color: var(--border-color-hover);
+                background: var(--bg-tertiary);
+                color: var(--text-color);
+                box-shadow: var(--shadow-inset);
+            }
+
         }
     }
 }
@@ -541,8 +603,24 @@ header {
     width: 400px;
 }
 
+.tech-print.bottom-right {
+    bottom: 5px;
+    right: 10px;
+}
+
+.tech-print.bottom-left {
+    top: 25px;
+    left: 15px;
+}
+
+.metric-label {
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
 .action-btn-small {
-    background: transparent;
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     color: var(--text-muted);
     font-family: "JetBrains Mono", monospace;
@@ -554,7 +632,7 @@ header {
     transition: all 0.2s ease;
     border-radius: 0 !important;
     box-shadow: var(--shadow-drop);
-    height: 30px;
+    height: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -566,6 +644,16 @@ header {
     color: var(--text-color);
 }
 
+.action-btn-small:active {
+    background: var(--panel-bg);
+    color: var(--text-muted);
+    box-shadow: var(--shadow-inset);
+}
+
+.btn-bg:hover {
+    border-color: var(--border-color-hover);
+}
+
 .action-btn-small i {
     color: var(--highlight-color);
     font-size: 10px;
@@ -574,6 +662,10 @@ header {
 
 .action-btn-small:hover i {
     color: var(--text-color);
+}
+
+.action-btn-small:active i {
+    color: var(--text-muted);
 }
 
 .action-btn-small.copied {
@@ -616,4 +708,48 @@ header {
     color: var(--text-color);
     font-weight: 700;
     font-size: 10px;
+}
+
+.results-header-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.results-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.filter-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-right: 15px;
+}
+
+.btn-bg {
+    display: inline-flex;
+    justify-content: center;
+    align-items: stretch;
+    margin: 0;
+    box-shadow: var(--shadow-inset);
+    padding: var(--padding);
+    gap: var(--gap);
+    position: relative;
+    overflow: hidden;
+    width: fit-content;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    user-select: none;
+    box-sizing: border-box;
+    flex-direction: column;
+    transition: all 0.2s;
+}
+
+.control-bar>.btn-bg {
+    width: 100%;
+}
+
+.control-bar>.btn-bg>.action-btn {
+    width: 100%;
 }
