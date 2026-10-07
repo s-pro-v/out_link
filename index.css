@@ -459,6 +459,7 @@ header {
         display: inline-flex;
         gap: 0.125rem;
         flex-wrap: wrap;
+        flex-direction: column;
 
         &::-webkit-scrollbar {
             width: 6px;
